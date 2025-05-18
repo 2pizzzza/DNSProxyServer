@@ -1,0 +1,7 @@
+upstream: 8.8.8.8
+port: 53
+blocked_response: 0.0.0.0
+blacklist:
+  - example.com
+  - ads.example.net
+  - badsite.local
