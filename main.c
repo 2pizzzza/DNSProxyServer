@@ -1,10 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
-#include <netinet/in.h>
 
+#include "blacklist.h"
 #include "config.h"
 #include "dns.h"
+#include "log.h"
+
 
 int main(int argc, char *argv[]) {
     if (argc != 2) {
@@ -12,15 +15,19 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
+    log_init("dns_proxy.log");
+
     config_t cfg = {0};
     if (load_config(argv[1], &cfg) != 0) {
         fprintf(stderr, "Failed to load config\n");
+        log_close();
         return 1;
     }
 
     int sock = dns_init_socket(cfg.port);
     if (sock < 0) {
         fprintf(stderr, "Failed to initialize socket\n");
+        log_close();
         return 1;
     }
 
@@ -30,6 +37,7 @@ int main(int argc, char *argv[]) {
     char response[MAX_PACKET_SIZE];
     struct sockaddr_in client_addr;
     socklen_t addr_len = sizeof(client_addr);
+    char domain[256];
 
     while (1) {
         int len = dns_receive_packet(sock, buffer, sizeof(buffer), &client_addr, &addr_len);
@@ -42,12 +50,25 @@ int main(int argc, char *argv[]) {
             continue;
         }
 
+        qname_to_domain(question.qname, domain, sizeof(domain));
+
         if (dns_is_blacklisted(question.qname, &cfg)) {
+            char resp_str[IP_STR_LEN + 4];
+            switch (cfg.block_resp) {
+                case RESP_NXDOMAIN: strcpy(resp_str, "NXDOMAIN"); break;
+                case RESP_REFUSED: strcpy(resp_str, "REFUSED"); break;
+                case RESP_IP: snprintf(resp_str, sizeof(resp_str), "IP:%.60s", cfg.block_ip); break;
+                default: strcpy(resp_str, "Unknown"); break;
+            }
+            log_request(&client_addr, domain, resp_str);
+
             dns_generate_response(buffer, &len, &header, &question, &cfg);
             dns_send_response(sock, buffer, len, &client_addr, addr_len);
         } else {
+            log_request(&client_addr, domain, "Forwarded to upstream");
+
             int resp_len;
-            if (dns_forward_packet(sock, buffer, len, &cfg, response, &resp_len) == 0) {
+            if (dns_forward_packet(buffer, len, &cfg, response, &resp_len) == 0) {
                 dns_send_response(sock, response, resp_len, &client_addr, addr_len);
             }
         }
@@ -57,5 +78,6 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < cfg.blacklist_count; i++) {
         free(cfg.blacklist[i]);
     }
+    log_close();
     return 0;
 }

@@ -40,7 +40,6 @@ int dns_receive_packet(int sock, char *buffer, int bufsize, struct sockaddr_in *
 int dns_parse_packet(char *buffer, int len, dns_header_t *header, dns_question_t *question) {
     if (len < 12) return -1;
 
-    // Parse header
     header->id = ntohs(*(uint16_t*)buffer);
     header->flags = ntohs(*(uint16_t*)(buffer + 2));
     header->qdcount = ntohs(*(uint16_t*)(buffer + 4));
@@ -56,14 +55,14 @@ int dns_parse_packet(char *buffer, int len, dns_header_t *header, dns_question_t
     while (pos < len && buffer[pos] != 0) pos += buffer[pos] + 1;
     pos++;
 
-    if (pos + 4 > len) return -1;
+    if (pos + 4 > len) return -1;  // Ensure space for QTYPE and QCLASS
     question->qtype = ntohs(*(uint16_t*)(buffer + pos));
     question->qclass = ntohs(*(uint16_t*)(buffer + pos + 2));
     return pos + 4;
 }
 
 void dns_generate_response(char *buffer, int *len, dns_header_t *header, dns_question_t *question, config_t *cfg) {
-    int pos = 12 + strlen(question->qname) + 1 + 4;
+    int pos = 12 + strlen(question->qname) + 1 + 4;  // Header + QNAME + QTYPE + QCLASS
     header->flags = htons(0x8180);
     header->ancount = 0;
 
@@ -102,7 +101,7 @@ void dns_generate_response(char *buffer, int *len, dns_header_t *header, dns_que
     *len = pos;
 }
 
-int dns_forward_packet(int sock, char *buffer, int len, config_t *cfg, char *response, int *resp_len) {
+int dns_forward_packet(char *buffer, int len, config_t *cfg, char *response, int *resp_len) {
     int upstream_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (upstream_sock < 0) {
         perror("upstream socket");

@@ -1,6 +1,7 @@
 #ifndef DNS_H
 #define DNS_H
 #include <stdint.h>
+#include <netinet/in.h>
 #include "config.h"
 
 #define DNS_PORT 53
@@ -35,7 +36,7 @@ int dns_receive_packet(int sock, char *buffer, int bufsize, struct sockaddr_in *
 int dns_parse_packet(char *buffer, int len, dns_header_t *header, dns_question_t *question);
 int dns_is_blacklisted(const char *qname, config_t *cfg);
 void dns_generate_response(char *buffer, int *len, dns_header_t *header, dns_question_t *question, config_t *cfg);
-int dns_forward_packet(int sock, char *buffer, int len, config_t *cfg, char *response, int *resp_len);
+int dns_forward_packet(char *buffer, int len, config_t *cfg, char *response, int *resp_len);
 int dns_send_response(int sock, char *buffer, int len, struct sockaddr_in *client_addr, socklen_t addr_len);
 
 #endif

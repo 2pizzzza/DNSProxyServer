@@ -1,7 +1,7 @@
 #include <string.h>
 #include "blacklist.h"
 
-static char *qname_to_domain(const char *qname, char *domain, int max_len) {
+char *qname_to_domain(const char *qname, char *domain, int max_len) {
     int pos = 0, out_pos = 0;
     while (qname[pos] != 0 && out_pos < max_len - 1) {
         int len = (unsigned char)qname[pos++];
