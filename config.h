@@ -4,7 +4,7 @@
 #define MAX_DOMAINS 1024
 #define IP_STR_LEN 64
 
-typedef enum { RESP_NXDOMAIN, RESP_REFUSED, RESP_IP } resp_type_t;
+typedef enum { RESP_IP = 1, RESP_NXDOMAIN = 2, RESP_REFUSED = 3 } resp_type_t;
 
 typedef struct {
     char upstream[IP_STR_LEN];

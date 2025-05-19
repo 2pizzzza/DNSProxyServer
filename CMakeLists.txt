@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.31)
-project(untitled C)
+project(DNSProxyServer C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(untitled main.c)
+add_executable(DNSProxyServer main.c)
