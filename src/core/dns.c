@@ -6,7 +6,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include "dns.h"
-#include "blacklist.h"
+#include "../blacklist/blacklist.h"
 
 int dns_init_socket(int port) {
     int sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);

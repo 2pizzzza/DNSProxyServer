@@ -8,3 +8,4 @@
 [2025-05-19 22:16:34] Client: 127.0.0.1, Domain: github.com, Response: Forwarded to upstream
 [2025-05-19 22:16:41] Client: 127.0.0.1, Domain: google.com, Response: REFUSED
 [2025-05-19 22:28:28] Client: 127.0.0.1, Domain: google.com, Response: REFUSED
+[2025-05-19 23:06:33] Client: 127.0.0.1, Domain: google.com, Response: REFUSED

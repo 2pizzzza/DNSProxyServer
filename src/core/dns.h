@@ -2,7 +2,7 @@
 #define DNS_H
 #include <stdint.h>
 #include <netinet/in.h>
-#include "config.h"
+#include "../config/config.h"
 
 #define DNS_PORT 53
 #define MAX_PACKET_SIZE 512

@@ -1,13 +1,19 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -g
+CFLAGS = -Wall -Wextra -g -I src
 LDFLAGS = -lyaml
-SOURCES = main.c config.c dns.c blacklist.c log.c
+SOURCES = src/main.c src/core/dns.c src/config/config.c src/blacklist/blacklist.c src/log/log.c
+OBJECTS = $(SOURCES:.c=.o)
 EXECUTABLE = DNSProxyServer
 
-all:
-	$(CC) $(CFLAGS) $(SOURCES) -o $(EXECUTABLE) $(LDFLAGS)
+all: $(EXECUTABLE)
+
+$(EXECUTABLE): $(OBJECTS)
+	$(CC) $(OBJECTS) -o $@ $(LDFLAGS)
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(EXECUTABLE)
+	rm -f $(OBJECTS) $(EXECUTABLE)
 
 .PHONY: all clean

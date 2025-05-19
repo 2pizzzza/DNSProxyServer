@@ -1,21 +1,25 @@
-cmake_minimum_required(VERSION 3.31)
+cmake_minimum_required(VERSION 3.10)
 project(DNSProxyServer C)
 
 set(CMAKE_C_STANDARD 11)
+add_compile_options(-Wall -Wextra -g)
 
-add_compile_options(-Wall -Wextra)
-
+# Source files
 set(SOURCES
-        main.c
-        config.c
-        dns.c
-        blacklist.c
-        log.c
+        src/main.c
+        src/core/dns.c
+        src/config/config.c
+        src/blacklist/blacklist.c
+        src/log/log.c
 )
+
+include_directories(src/core src/config src/blacklist src/log)
 
 add_executable(DNSProxyServer ${SOURCES})
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(YAML REQUIRED yaml-0.1)
-include_directories(${YAML_INCLUDE_DIRS})
-target_link_libraries(DNSProxyServer ${YAML_LIBRARIES})
+find_library(YAML_LIBRARY NAMES yaml)
+if(NOT YAML_LIBRARY)
+    message(FATAL_ERROR "libyaml not found")
+endif()
+
+target_link_libraries(DNSProxyServer ${YAML_LIBRARY})

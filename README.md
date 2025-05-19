@@ -13,20 +13,25 @@ This is a DNS proxy server written in C that forwards DNS requests to an upstrea
 ## Project Structure
 ```
 .
-├── blacklist.c        # Blacklist matching functions
-├── blacklist.h        # Blacklist function declarations
-├── build             # Build directory for CMake
-├── CMakeLists.txt    # CMake configuration file
-├── config.c          # Configuration parsing (YAML)
-├── config.h          # Configuration structures and constants
-├── config.yml        # Sample configuration file
-├── dns.c             # DNS packet handling and socket operations
-├── dns.h             # DNS structures and function declarations
-├── dns_proxy.log     # Log file for client requests
-├── log.c             # Logging functions
-├── log.h             # Logging function declarations
-├── main.c            # Main program logic
-└── Makefile          # Makefile for direct compilation
+├── CMakeLists.txt          # CMake configuration
+├── config.yml             # Sample configuration file
+├── dns_proxy.log          # Log file for client requests
+├── Makefile               # Makefile for direct compilation
+├── README.md              # Project documentation
+└── src                    # Source code
+    ├── blacklist          # Blacklist functionality
+    │   ├── blacklist.c
+    │   └── blacklist.h
+    ├── config             # Configuration handling
+    │   ├── config.c
+    │   └── config.h
+    ├── core               # Core DNS functionality
+    │   ├── dns.c
+    │   └── dns.h
+    ├── log                # Logging functionality
+    │   ├── log.c
+    │   └── log.h
+    └── main.c             # Main program entry
 ```
 
 ## Prerequisites
@@ -58,11 +63,11 @@ sudo apt-get install build-essential cmake libyaml-dev
 4. The executable `DNSProxyServer` will be created in the `build` directory.
 
 ### Using Makefile
-Alternatively, you can build directly using the provided `Makefile`:
+Build directly using the provided `Makefile`:
 ```bash
 make
 ```
-This will produce the executable `dnsproxy` in the root directory.
+This will produce the executable `DNSProxyServer` in the root directory.
 
 To clean up:
 ```bash
@@ -95,10 +100,8 @@ To use a different configuration file, specify its path when running the server.
 Run the server with root privileges (required for binding to port 53):
 ```bash
 sudo ./build/DNSProxyServer config.yml
-```
-or, if built with Makefile:
-```bash
-sudo ./program config.yml
+# or, if built with Makefile:
+sudo ./DNSProxyServer config.yml
 ```
 
 The server will:
@@ -195,8 +198,8 @@ The server was tested using multiple tools to verify functionality for blacklist
 
 Example log entry:
 ```
-[2025-05-19 22:13:45] Client: 127.0.0.1, Domain: google.com, Response: REFUSED
-[2025-05-19 22:13:50] Client: 127.0.0.1, Domain: kernel.org, Response: Forwarded to upstream
+[2025-05-19 23:02:45] Client: 127.0.0.1, Domain: google.com, Response: REFUSED
+[2025-05-19 23:02:50] Client: 127.0.0.1, Domain: kernel.org, Response: Forwarded to upstream
 ```
 
 ## Limitations
@@ -212,3 +215,6 @@ Example log entry:
 
 ## License
 This project uses `libyaml` (MIT License). Ensure compliance with its terms. The rest of the code is provided under the MIT License (see `LICENSE` file, if added).
+
+## Contributing
+Feel free to open issues or submit pull requests on GitHub for bug fixes or improvements.

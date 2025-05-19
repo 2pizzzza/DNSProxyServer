@@ -3,10 +3,10 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "blacklist.h"
-#include "config.h"
-#include "dns.h"
-#include "log.h"
+#include "blacklist/blacklist.h"
+#include "config/config.h"
+#include "core/dns.h"
+#include "log/log.h"
 
 
 int main(int argc, char *argv[]) {
