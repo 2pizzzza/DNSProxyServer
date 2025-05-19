@@ -215,6 +215,3 @@ Example log entry:
 
 ## License
 This project uses `libyaml` (MIT License). Ensure compliance with its terms. The rest of the code is provided under the MIT License (see `LICENSE` file, if added).
-
-## Contributing
-Feel free to open issues or submit pull requests on GitHub for bug fixes or improvements.
